@@ -1,0 +1,64 @@
+# Get the current day of the week
+$dayOfWeek = (Get-Date).DayOfWeek
+
+# Food Options
+$monday = @('Cheep Chicken Monday') * 70 + @('Canned Meat Monday') * 10 + @('Mart Monday') * 10 + @('Mongolian Monday') * 10
+$tuesday = @('Taco Tuesday') * 40 + @('Turnover Tuesday') * 20 + @('Number Two Tuesday') * 20 + @('Tin Can Tuesday') * 10 + @('Teriyaki Tuesday') * 10
+$wednesday = @('Wacky Wednesday') * 70 + @('Weiner Wednesday') * 15 + @('Wild Card Wednesday') * 10+ @('Whopper Wednesday') * 5 
+$thursday = @('Thunder Thursday') * 25 + @('Three Item Thursday') * 50 + @('Number Three Thursday') * 25
+$friday = @('Free Fry Friday') * 70 + @('Fred Meyer Friday') * 15 + @('Freedom Friday') * 15
+
+# Restaurant Options
+$restaurants = @('Taco Bell') * 5 + @('Taco Time') + @('Jack in the Box') + @('Arbys') * 5 + @('McDonalds') + @('KFC') * 5 + @('Burger King')
+
+# Assign Arrays
+$weekDays = @{
+    'Monday' = $monday
+    'Tuesday' = $tuesday
+    'Wednesday' = $wednesday
+    'Thursday' = $thursday
+    'Friday' = $friday
+}
+
+# New list that contains all the options from all weekdays
+$allOptions = $monday + $tuesday + $wednesday + $thursday + $friday
+
+# Rerun flag
+$rerun = $true
+
+do {
+    # Select Item
+    if ($weekDays.ContainsKey($dayOfWeek.ToString())) {
+        $todayOptions = $weekDays[$dayOfWeek.ToString()]
+        $randomItem = $todayOptions | Get-Random
+
+        Write-Host "`n╔═══════════════════════╗" -ForegroundColor Cyan
+        Write-Host "  Today is $dayOfWeek" -ForegroundColor Yellow
+        Write-Host "  Random item chosen:" -ForegroundColor Green
+		
+		# If 'Wild Card Wednesday' is selected, choose from the list of all options
+        if ($randomItem -eq 'Wild Card Wednesday') {
+            $randomItem = $allOptions | Get-Random
+            Write-Host "  Wild Card Wednesday!" -ForegroundColor Cyan
+        }
+		
+		# If 'Number Three Thursday' is selected, choose from the list of restaurants
+        if ($randomItem -eq 'Number Three Thursday') {
+            $randomItem = $restaurants | Get-Random
+            Write-Host "  Number Three Thursday!" -ForegroundColor Cyan
+        }		
+        
+		Write-Host "  → $randomItem" -ForegroundColor Magenta
+        Write-Host "╚═══════════════════════╝" -ForegroundColor Cyan
+    } else {
+        Write-Host "`n====================================" -ForegroundColor Red
+        Write-Host "  Today is $dayOfWeek, a day without specified items." -ForegroundColor Yellow
+        Write-Host "====================================" -ForegroundColor Red
+    }
+
+    # Ask the user if they want to rerun the script
+    $userInput = Read-Host -Prompt "Enjoy!"
+    if ($userInput -ne 'R') {
+        $rerun = $false
+    }
+} until (-not $rerun)
