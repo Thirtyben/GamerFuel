@@ -1,0 +1,76 @@
+<script>
+    function seededRandom(seed) {
+        const x = Math.sin(seed++) * 10000;
+        return x - Math.floor(x);
+    }
+
+    function getMenuItem() {
+        const today = new Date(); //Format: (YYYY, MM, DD) (MM starts at 0)
+        const dayName = today.toLocaleString('en-us', { weekday: 'long' });
+
+        const seed = today.getFullYear() * 365 + today.getMonth() * 30 + today.getDate();
+
+        let foodOptions = [];
+        let restaurants = Array(5).fill('Taco Bell').concat('Taco Time', 'Jack in the Box', Array(5).fill('Arbys'), 'McDonalds', Array(5).fill('KFC'), 'Burger King');
+
+        switch (dayName) {
+            case 'Monday':
+                foodOptions = Array(44).fill('Cheep Chicken Monday').concat(Array(20).fill('Canned Meal Monday'), Array(20).fill('Mart Monday'), Array(1).fill('Mongolian Monday'), Array(15).fill('MRE Monday'));
+                break;
+            case 'Tuesday':
+                foodOptions = Array(40).fill('Taco Tuesday').concat(Array(20).fill('Turnover Tuesday'), Array(20).fill('Number Two Tuesday'), Array(10).fill('Tin Can Tuesday'), Array(10).fill('Teriyaki Tuesday'));
+                break;
+            case 'Wednesday':
+                foodOptions = Array(45).fill('Wacky Wednesday').concat(Array(15).fill('Weiner Wednesday'), Array(10).fill('Wild Card Wednesday'), Array(20).fill('Whopper Wednesday'), Array(10).fill('Weber Wednesday'));
+                break;
+            case 'Thursday':
+                foodOptions = Array(25).fill('Thunder Thursday').concat(Array(50).fill('Three Item Thursday'), Array(25).fill('Number Three Thursday'));
+                break;
+            case 'Friday':
+                foodOptions = Array(70).fill('Free Fry Friday').concat(Array(15).fill('Fred Meyer Friday'), Array(15).fill('Freedom Friday'));
+                break;
+            default:
+                document.getElementById('output').innerHTML = `<div class="warning">Today is ${dayName}, a day without specified items.</div>`;
+                return;
+        }
+
+        const randomIndex = Math.floor(seededRandom(seed) * foodOptions.length);
+        let randomItem = foodOptions[randomIndex];
+
+        let extraMessage = ""; // This will hold additional info if needed.
+
+        if (randomItem === 'Wild Card Wednesday') {
+            const allOptions = foodOptions.concat(restaurants);
+            const wildCardItem = allOptions[Math.floor(seededRandom(seed) * allOptions.length)];
+            extraMessage = `Wild Card Wednesday At: ${wildCardItem}`;
+        }
+
+        if (randomItem === 'Number Two Tuesday') {
+            const restaurantItem = restaurants[Math.floor(seededRandom(seed) * restaurants.length)];
+            extraMessage = `Number Two Tuesday at: ${restaurantItem}`;
+        }
+
+		if (randomItem === 'Number Three Thursday') {
+			// Generate a random number based on the seed
+			let randomIndex = Math.floor(seededRandom(seed) * 1000);
+
+			// Use the modulus operator to ensure the index is within the range of the array length
+			randomIndex = randomIndex % restaurants.length;
+
+			// Select the restaurant item using the new random index
+			const restaurantItem = restaurants[randomIndex];
+
+			// Construct the extra message
+			extraMessage = `Number Three Thursday at: ${restaurantItem}`;
+		}
+
+        document.getElementById('output').innerHTML = `
+            <p>Today is ${dayName}</p>
+            <p id="message">→ ${randomItem}</p>
+            ${extraMessage ? `<p id="extraMessage">${extraMessage}</p>` : ""}
+        `;
+    }
+
+    // Run the function immediately
+    getMenuItem();
+</script>
